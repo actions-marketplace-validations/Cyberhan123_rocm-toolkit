@@ -55,7 +55,7 @@ jobs:
       - name: Run the action on this runner with method ${{matrix.method}}
         uses: ./
         with:
-          method: ${{matrix.method}}
+          rocm: '5.5.0'
 
       - name: Test if clang an clang++ is available
         run: |
