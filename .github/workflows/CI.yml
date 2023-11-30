@@ -68,4 +68,3 @@ jobs:
         run: |
           ls $env:ROCM_PATH
           ls $env:ROCM_PATH\bin
-          ls $env:CUDA_PATH\include
