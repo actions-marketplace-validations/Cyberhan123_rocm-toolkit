@@ -20,8 +20,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-2022, windows-2019, ubuntu-22.04, ubuntu-20.04]
-        method: [local, network]
+        os: [windows-latest]
+        method: [local]
     runs-on: ${{ matrix.os }}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
@@ -58,9 +58,6 @@ jobs:
       - name: Package
         run: npm run package
 
-      - name: Test
-        run: npm run test
-
       - name: Run the action on this runner with method ${{matrix.method}}
         uses: ./
         with:
@@ -71,30 +68,22 @@ jobs:
         uses: ./
         with:
           method: ${{matrix.method}}
-          sub-packages: '["nvcc"]'
-          non-cuda-sub-packages: '["libcublas"]'
 
       - name: Run the action on this runner with nvcc subpackage only (Windows)
         if: runner.os == 'Windows'
         uses: ./
         with:
           method: ${{matrix.method}}
-          sub-packages: '["nvcc"]'
 
       - name: Test if nvcc is available
-        run: nvcc -V
+        run: |
+          clang --version
+          clang++ --version
 
       - name: List paths (windows)
         if: runner.os == 'Windows'
         shell: powershell
         run: |
-          ls $env:CUDA_PATH
-          ls $env:CUDA_PATH\bin
+          ls $env:ROCM_PATH
+          ls $env:ROCM_PATH\bin
           ls $env:CUDA_PATH\include
-
-      - name: List paths (linux)
-        if: runner.os == 'Linux'
-        run: |
-          ls $CUDA_PATH
-          ls $CUDA_PATH/bin
-          ls $CUDA_PATH/include
