@@ -45,7 +45,7 @@ export async function install(
             // Windows handles permissions automatically
             command = `powershell`
             // Install silently
-            installArgs = ["-Command",`Start-Process ${executablePath} -ArgumentList '-install', -NoNewWindow -Wait`]
+            installArgs = ["-Command",`Start-Process ${executablePath} -ArgumentList '-install','-log',"${executablePath}/installer_log.txt" -NoNewWindow -Wait`]
             // Add subpackages to command args (if any)
             // installArgs = installArgs.concat(
             //     subPackages.map(subPackage => {
@@ -69,14 +69,14 @@ export async function install(
         throw error
     } finally {
         // Always upload installation log regardless of error
-        if ((await getOs()) === OSType.linux) {
+        if ((await getOs()) === OSType.windows) {
             const artifactClient = artifact.create()
             const artifactName = 'install-log'
-            const patterns = ['/var/log/cuda-installer.log']
+            const patterns = [`${executablePath}/installer_log.txt`]
             const globber = await glob.create(patterns.join('\n'))
             const files = await globber.glob()
             if (files.length > 0) {
-                const rootDirectory = '/var/log'
+                const rootDirectory = executablePath
                 const artifactOptions = {
                     continueOnError: true
                 }
