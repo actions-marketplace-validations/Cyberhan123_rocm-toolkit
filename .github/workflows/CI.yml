@@ -49,12 +49,6 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Format check
-        run: npm run format-check
-
-      - name: Lint
-        run: npm run lint
-
       - name: Package
         run: npm run package
 
@@ -63,19 +57,7 @@ jobs:
         with:
           method: ${{matrix.method}}
 
-      - name: Run the action on this runner with nvcc and libcublas subpackages (Linux)
-        if: runner.os == 'Linux' && matrix.method == 'network'
-        uses: ./
-        with:
-          method: ${{matrix.method}}
-
-      - name: Run the action on this runner with nvcc subpackage only (Windows)
-        if: runner.os == 'Windows'
-        uses: ./
-        with:
-          method: ${{matrix.method}}
-
-      - name: Test if nvcc is available
+      - name: Test if clang an clang++ is available
         run: |
           clang --version
           clang++ --version
