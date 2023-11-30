@@ -10,8 +10,8 @@ import {parsePackages} from './parser'
 
 async function run(): Promise<void> {
   try {
-    const cuda: string = core.getInput('cuda')
-    core.debug(`Desired cuda version: ${cuda}`)
+    const rocm: string = core.getInput('rocm')
+    core.debug(`Desired cuda version: ${rocm}`)
     const subPackagesArgName = 'sub-packages'
     const subPackages: string = core.getInput(subPackagesArgName)
     core.debug(`Desired subPackages: ${subPackages}`)
@@ -42,7 +42,7 @@ async function run(): Promise<void> {
     core.debug(`Parsed method: ${methodParsed}`)
 
     // Parse version string
-    const version = await getVersion(cuda, methodParsed)
+    const version = await getVersion(rocm, methodParsed)
 
     // Parse linuxLocalArgs array
     let linuxLocalArgsArray: string[] = []
@@ -99,8 +99,8 @@ async function run(): Promise<void> {
     const cudaPath: string = await updatePath(version)
 
     // Set output variables
-    core.setOutput('cuda', cuda)
-    core.setOutput('CUDA_PATH', cudaPath)
+    core.setOutput('rocm', rocm)
+    core.setOutput('ROCM_PATH', cudaPath)
   } catch (error) {
     if (error instanceof Error) {
       core.setFailed(error)

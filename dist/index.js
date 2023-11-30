@@ -163,7 +163,7 @@ const get_links_1 = __nccwpck_require__(1451);
 function download(version, method, useGitHubCache) {
     return __awaiter(this, void 0, void 0, function* () {
         // First try to find tool with desired version in tool cache (local to machine)
-        const toolName = 'cuda_installer';
+        const toolName = 'rocm_installer';
         const osType = yield (0, platform_1.getOs)();
         const osRelease = yield (0, platform_1.getRelease)();
         const toolId = `${toolName}-${osType}-${osRelease}`;
@@ -347,17 +347,19 @@ function install(executablePath, version, subPackagesArray, linuxLocalArgsArray)
                 break;
             case platform_1.OSType.windows:
                 // Windows handles permissions automatically
-                command = executablePath;
+                command = `Start-Process ${executablePath} -ArgumentList '-install', -NoNewWindow -Wait`;
                 // Install silently
-                installArgs = ['-s'];
+                installArgs = [];
                 // Add subpackages to command args (if any)
-                installArgs = installArgs.concat(subPackages.map(subPackage => {
-                    // Display driver sub package name is not dependent on version
-                    if (subPackage === 'Display.Driver') {
-                        return subPackage;
-                    }
-                    return `${subPackage}_${version.major}.${version.minor}`;
-                }));
+                // installArgs = installArgs.concat(
+                //     subPackages.map(subPackage => {
+                //         // Display driver sub package name is not dependent on version
+                //         if (subPackage === 'Display.Driver') {
+                //             return subPackage
+                //         }
+                //         return `${subPackage}_${version.major}.${version.minor}`
+                //     })
+                // )
                 break;
         }
         // Run installer
@@ -479,136 +481,7 @@ class LinuxLinks extends links_1.AbstractLinks {
     constructor() {
         super();
         // Map of cuda SemVer version to download URL
-        this.cudaVersionToURL = new Map([
-            [
-                '12.2.0',
-                'https://developer.download.nvidia.com/compute/cuda/12.2.0/local_installers/cuda_12.2.0_535.54.03_linux.run'
-            ],
-            [
-                '12.1.0',
-                'https://developer.download.nvidia.com/compute/cuda/12.1.0/local_installers/cuda_12.1.0_530.30.02_linux.run'
-            ],
-            [
-                '12.0.1',
-                'https://developer.download.nvidia.com/compute/cuda/12.0.1/local_installers/cuda_12.0.1_525.85.12_linux.run'
-            ],
-            [
-                '12.0.0',
-                'https://developer.download.nvidia.com/compute/cuda/12.0.0/local_installers/cuda_12.0.0_525.60.13_linux.run'
-            ],
-            [
-                '11.8.0',
-                'https://developer.download.nvidia.com/compute/cuda/11.8.0/local_installers/cuda_11.8.0_520.61.05_linux.run'
-            ],
-            [
-                '11.7.1',
-                'https://developer.download.nvidia.com/compute/cuda/11.7.1/local_installers/cuda_11.7.1_515.65.01_linux.run'
-            ],
-            [
-                '11.7.0',
-                'https://developer.download.nvidia.com/compute/cuda/11.7.0/local_installers/cuda_11.7.0_515.43.04_linux.run'
-            ],
-            [
-                '11.6.2',
-                'https://developer.download.nvidia.com/compute/cuda/11.6.2/local_installers/cuda_11.6.2_510.47.03_linux.run'
-            ],
-            [
-                '11.6.1',
-                'https://developer.download.nvidia.com/compute/cuda/11.6.1/local_installers/cuda_11.6.1_510.47.03_linux.run'
-            ],
-            [
-                '11.6.0',
-                'https://developer.download.nvidia.com/compute/cuda/11.6.0/local_installers/cuda_11.6.0_510.39.01_linux.run'
-            ],
-            [
-                '11.5.2',
-                'https://developer.download.nvidia.com/compute/cuda/11.5.2/local_installers/cuda_11.5.2_495.29.05_linux.run'
-            ],
-            [
-                '11.5.1',
-                'https://developer.download.nvidia.com/compute/cuda/11.5.1/local_installers/cuda_11.5.1_495.29.05_linux.run'
-            ],
-            [
-                '11.5.0',
-                'https://developer.download.nvidia.com/compute/cuda/11.5.0/local_installers/cuda_11.5.0_495.29.05_linux.run'
-            ],
-            [
-                '11.4.4',
-                'https://developer.download.nvidia.com/compute/cuda/11.4.4/local_installers/cuda_11.4.4_470.82.01_linux.run'
-            ],
-            [
-                '11.4.3',
-                'https://developer.download.nvidia.com/compute/cuda/11.4.3/local_installers/cuda_11.4.3_470.82.01_linux.run'
-            ],
-            [
-                '11.4.2',
-                'https://developer.download.nvidia.com/compute/cuda/11.4.2/local_installers/cuda_11.4.2_470.57.02_linux.run'
-            ],
-            [
-                '11.4.1',
-                'https://developer.download.nvidia.com/compute/cuda/11.4.1/local_installers/cuda_11.4.1_470.57.02_linux.run'
-            ],
-            [
-                '11.4.0',
-                'https://developer.download.nvidia.com/compute/cuda/11.4.0/local_installers/cuda_11.4.0_470.42.01_linux.run'
-            ],
-            [
-                '11.3.1',
-                'https://developer.download.nvidia.com/compute/cuda/11.3.1/local_installers/cuda_11.3.1_465.19.01_linux.run'
-            ],
-            [
-                '11.3.0',
-                'https://developer.download.nvidia.com/compute/cuda/11.3.0/local_installers/cuda_11.3.0_465.19.01_linux.run'
-            ],
-            [
-                '11.2.2',
-                'https://developer.download.nvidia.com/compute/cuda/11.2.2/local_installers/cuda_11.2.2_460.32.03_linux.run'
-            ],
-            [
-                '11.2.1',
-                'https://developer.download.nvidia.com/compute/cuda/11.2.1/local_installers/cuda_11.2.1_460.32.03_linux.run'
-            ],
-            [
-                '11.2.0',
-                'https://developer.download.nvidia.com/compute/cuda/11.2.0/local_installers/cuda_11.2.0_460.27.04_linux.run'
-            ],
-            [
-                '11.1.1',
-                'https://developer.download.nvidia.com/compute/cuda/11.1.1/local_installers/cuda_11.1.1_455.32.00_linux.run'
-            ],
-            [
-                '11.0.3',
-                'https://developer.download.nvidia.com/compute/cuda/11.0.3/local_installers/cuda_11.0.3_450.51.06_linux.run'
-            ],
-            [
-                '11.0.2',
-                'https://developer.download.nvidia.com/compute/cuda/11.0.2/local_installers/cuda_11.0.2_451.48_win10.exes'
-            ],
-            [
-                '11.0.1',
-                'https://developer.download.nvidia.com/compute/cuda/11.0.1/local_installers/cuda_11.0.1_450.36.06_linux.run'
-            ],
-            [
-                '10.2.89',
-                'https://developer.download.nvidia.com/compute/cuda/10.2/Prod/local_installers/cuda_10.2.89_440.33.01_linux.run'
-            ],
-            [
-                '10.1.243',
-                'https://developer.download.nvidia.com/compute/cuda/10.1/Prod/local_installers/cuda_10.1.243_418.87.00_linux.run'
-            ],
-            [
-                '10.0.130',
-                'https://developer.nvidia.com/compute/cuda/10.0/Prod/local_installers/cuda_10.0.130_410.48_linux'
-            ],
-            [
-                '9.2.148',
-                'https://developer.nvidia.com/compute/cuda/9.2/Prod2/local_installers/cuda_9.2.148_396.37_linux'
-            ],
-            [
-                '8.0.61',
-                'https://developer.nvidia.com/compute/cuda/8.0/Prod2/local_installers/cuda_8.0.61_375.26_linux-run'
-            ]
-        ]);
+        this.cudaVersionToURL = new Map([]);
     }
     static get Instance() {
         return this._instance || (this._instance = new this());
@@ -651,264 +524,16 @@ class WindowsLinks extends links_1.AbstractLinks {
         super();
         this.cudaVersionToNetworkUrl = new Map([
             [
-                '12.2.0',
-                'https://developer.download.nvidia.com/compute/cuda/12.2.0/network_installers/cuda_12.2.0_windows_network.exe'
+                '5.5.0',
+                'https://download.amd.com/developer/eula/rocm-hub/AMD-Software-PRO-Edition-23.Q3-WinSvr2022-For-HIP.exe'
             ],
-            [
-                '12.1.0',
-                'https://developer.download.nvidia.com/compute/cuda/12.1.0/network_installers/cuda_12.1.0_windows_network.exe'
-            ],
-            [
-                '12.0.1',
-                'https://developer.download.nvidia.com/compute/cuda/12.0.1/network_installers/cuda_12.0.1_windows_network.exe'
-            ],
-            [
-                '12.0.0',
-                'https://developer.download.nvidia.com/compute/cuda/12.0.0/network_installers/cuda_12.0.0_windows_network.exe'
-            ],
-            [
-                '11.8.0',
-                'https://developer.download.nvidia.com/compute/cuda/11.8.0/network_installers/cuda_11.8.0_windows_network.exe'
-            ],
-            [
-                '11.7.1',
-                'https://developer.download.nvidia.com/compute/cuda/11.7.1/network_installers/cuda_11.7.1_windows_network.exe'
-            ],
-            [
-                '11.7.0',
-                'https://developer.download.nvidia.com/compute/cuda/11.7.0/network_installers/cuda_11.7.0_windows_network.exe'
-            ],
-            [
-                '11.6.2',
-                'https://developer.download.nvidia.com/compute/cuda/11.6.2/network_installers/cuda_11.6.2_windows_network.exe'
-            ],
-            [
-                '11.6.1',
-                'https://developer.download.nvidia.com/compute/cuda/11.6.1/network_installers/cuda_11.6.1_windows_network.exe'
-            ],
-            [
-                '11.6.0',
-                'https://developer.download.nvidia.com/compute/cuda/11.6.0/network_installers/cuda_11.6.0_windows_network.exe'
-            ],
-            [
-                '11.5.2',
-                'https://developer.download.nvidia.com/compute/cuda/11.5.2/network_installers/cuda_11.5.2_windows_network.exe'
-            ],
-            [
-                '11.5.1',
-                'https://developer.download.nvidia.com/compute/cuda/11.5.1/network_installers/cuda_11.5.1_windows_network.exe'
-            ],
-            [
-                '11.5.0',
-                'https://developer.download.nvidia.com/compute/cuda/11.5.0/network_installers/cuda_11.5.0_win10_network.exe'
-            ],
-            [
-                '11.4.4',
-                'https://developer.download.nvidia.com/compute/cuda/11.4.4/network_installers/cuda_11.4.4_windows_network.exe'
-            ],
-            [
-                '11.4.3',
-                'https://developer.download.nvidia.com/compute/cuda/11.4.3/network_installers/cuda_11.4.3_win10_network.exe'
-            ],
-            [
-                '11.4.2',
-                'https://developer.download.nvidia.com/compute/cuda/11.4.2/network_installers/cuda_11.4.2_win10_network.exe'
-            ],
-            [
-                '11.4.1',
-                'https://developer.download.nvidia.com/compute/cuda/11.4.1/network_installers/cuda_11.4.1_win10_network.exe'
-            ],
-            [
-                '11.4.0',
-                'https://developer.download.nvidia.com/compute/cuda/11.4.0/network_installers/cuda_11.4.0_win10_network.exe'
-            ],
-            [
-                '11.3.1',
-                'https://developer.download.nvidia.com/compute/cuda/11.3.1/network_installers/cuda_11.3.1_win10_network.exe'
-            ],
-            [
-                '11.3.0',
-                'https://developer.download.nvidia.com/compute/cuda/11.3.0/network_installers/cuda_11.3.0_win10_network.exe'
-            ],
-            [
-                '11.2.2',
-                'https://developer.download.nvidia.com/compute/cuda/11.2.2/network_installers/cuda_11.2.2_win10_network.exe'
-            ],
-            [
-                '11.2.1',
-                'https://developer.download.nvidia.com/compute/cuda/11.2.1/network_installers/cuda_11.2.1_win10_network.exe'
-            ],
-            [
-                '11.2.0',
-                'https://developer.download.nvidia.com/compute/cuda/11.2.0/network_installers/cuda_11.2.0_win10_network.exe'
-            ],
-            [
-                '11.1.1',
-                'https://developer.download.nvidia.com/compute/cuda/11.1.1/network_installers/cuda_11.1.1_win10_network.exe'
-            ],
-            [
-                '11.0.3',
-                'https://developer.download.nvidia.com/compute/cuda/11.0.3/network_installers/cuda_11.0.3_win10_network.exe'
-            ],
-            [
-                '11.0.2',
-                'https://developer.download.nvidia.com/compute/cuda/11.0.2/network_installers/cuda_11.0.2_win10_network.exe'
-            ],
-            [
-                '11.0.1',
-                'https://developer.download.nvidia.com/compute/cuda/11.0.1/network_installers/cuda_11.0.1_win10_network.exe'
-            ],
-            [
-                '10.2.89',
-                'https://developer.download.nvidia.com/compute/cuda/10.2/Prod/network_installers/cuda_10.2.89_win10_network.exe'
-            ],
-            [
-                '10.1.243',
-                'https://developer.download.nvidia.com/compute/cuda/10.1/Prod/network_installers/cuda_10.1.243_win10_network.exe'
-            ],
-            [
-                '10.0.130',
-                'https://developer.nvidia.com/compute/cuda/10.0/Prod/network_installers/cuda_10.0.130_win10_network'
-            ],
-            [
-                '9.2.148',
-                'https://developer.nvidia.com/compute/cuda/9.2/Prod2/network_installers2/cuda_9.2.148_win10_network'
-            ],
-            [
-                '8.0.61',
-                'https://developer.nvidia.com/compute/cuda/8.0/Prod2/network_installers/cuda_8.0.61_win10_network-exe'
-            ]
         ]);
         // Map of cuda SemVer version to download URL
         this.cudaVersionToURL = new Map([
             [
-                '12.2.0',
-                'https://developer.download.nvidia.com/compute/cuda/12.2.0/local_installers/cuda_12.2.0_536.25_windows.exe'
+                '5.5.0',
+                'https://download.amd.com/developer/eula/rocm-hub/AMD-Software-PRO-Edition-23.Q3-WinSvr2022-For-HIP.exe'
             ],
-            [
-                '12.1.0',
-                'https://developer.download.nvidia.com/compute/cuda/12.1.0/local_installers/cuda_12.1.0_531.14_windows.exe'
-            ],
-            [
-                '12.0.1',
-                'https://developer.download.nvidia.com/compute/cuda/12.0.1/local_installers/cuda_12.0.1_528.33_windows.exe'
-            ],
-            [
-                '12.0.0',
-                'https://developer.download.nvidia.com/compute/cuda/12.0.0/local_installers/cuda_12.0.0_527.41_windows.exe'
-            ],
-            [
-                '11.8.0',
-                'https://developer.download.nvidia.com/compute/cuda/11.8.0/local_installers/cuda_11.8.0_522.06_windows.exe'
-            ],
-            [
-                '11.7.1',
-                'https://developer.download.nvidia.com/compute/cuda/11.7.1/local_installers/cuda_11.7.1_516.94_windows.exe'
-            ],
-            [
-                '11.7.0',
-                'https://developer.download.nvidia.com/compute/cuda/11.7.0/local_installers/cuda_11.7.0_516.01_windows.exe'
-            ],
-            [
-                '11.6.2',
-                'https://developer.download.nvidia.com/compute/cuda/11.6.2/local_installers/cuda_11.6.2_511.65_windows.exe'
-            ],
-            [
-                '11.6.1',
-                'https://developer.download.nvidia.com/compute/cuda/11.6.1/local_installers/cuda_11.6.1_511.65_windows.exe'
-            ],
-            [
-                '11.6.0',
-                'https://developer.download.nvidia.com/compute/cuda/11.6.0/local_installers/cuda_11.6.0_511.23_windows.exe'
-            ],
-            [
-                '11.5.2',
-                'https://developer.download.nvidia.com/compute/cuda/11.5.2/local_installers/cuda_11.5.2_496.13_windows.exe'
-            ],
-            [
-                '11.5.1',
-                'https://developer.download.nvidia.com/compute/cuda/11.5.1/local_installers/cuda_11.5.1_496.13_windows.exe'
-            ],
-            [
-                '11.5.0',
-                'https://developer.download.nvidia.com/compute/cuda/11.5.0/local_installers/cuda_11.5.0_496.13_win10.exe'
-            ],
-            [
-                '11.4.4',
-                'https://developer.download.nvidia.com/compute/cuda/11.4.4/local_installers/cuda_11.4.4_472.50_windows.exe'
-            ],
-            [
-                '11.4.3',
-                'https://developer.download.nvidia.com/compute/cuda/11.4.3/local_installers/cuda_11.4.3_472.50_win10.exe'
-            ],
-            [
-                '11.4.2',
-                'https://developer.download.nvidia.com/compute/cuda/11.4.2/local_installers/cuda_11.4.2_471.41_win10.exe'
-            ],
-            [
-                '11.4.1',
-                'https://developer.download.nvidia.com/compute/cuda/11.4.1/local_installers/cuda_11.4.1_471.41_win10.exe'
-            ],
-            [
-                '11.4.0',
-                'https://developer.download.nvidia.com/compute/cuda/11.4.0/local_installers/cuda_11.4.0_471.11_win10.exe'
-            ],
-            [
-                '11.3.1',
-                'https://developer.download.nvidia.com/compute/cuda/11.3.1/local_installers/cuda_11.3.1_465.89_win10.exe'
-            ],
-            [
-                '11.3.0',
-                'https://developer.download.nvidia.com/compute/cuda/11.3.0/local_installers/cuda_11.3.0_465.89_win10.exe'
-            ],
-            [
-                '11.2.2',
-                'https://developer.download.nvidia.com/compute/cuda/11.2.2/local_installers/cuda_11.2.2_461.33_win10.exe'
-            ],
-            [
-                '11.2.1',
-                'https://developer.download.nvidia.com/compute/cuda/11.2.1/local_installers/cuda_11.2.1_461.09_win10.exe'
-            ],
-            [
-                '11.2.0',
-                'https://developer.download.nvidia.com/compute/cuda/11.2.0/local_installers/cuda_11.2.0_460.89_win10.exe'
-            ],
-            [
-                '11.1.1',
-                'https://developer.download.nvidia.com/compute/cuda/11.1.1/local_installers/cuda_11.1.1_456.81_win10.exe'
-            ],
-            [
-                '11.0.3',
-                'https://developer.download.nvidia.com/compute/cuda/11.0.3/local_installers/cuda_11.0.3_451.82_win10.exe'
-            ],
-            [
-                '11.0.2',
-                'https://developer.download.nvidia.com/compute/cuda/11.0.2/local_installers/cuda_11.0.2_451.48_win10.exe'
-            ],
-            [
-                '11.0.1',
-                'https://developer.download.nvidia.com/compute/cuda/11.0.1/local_installers/cuda_11.0.1_451.22_win10.exe'
-            ],
-            [
-                '10.2.89',
-                'https://developer.download.nvidia.com/compute/cuda/10.2/Prod/local_installers/cuda_10.2.89_441.22_win10.exe'
-            ],
-            [
-                '10.1.243',
-                'https://developer.download.nvidia.com/compute/cuda/10.1/Prod/local_installers/cuda_10.1.243_426.00_win10.exe'
-            ],
-            [
-                '10.0.130',
-                'https://developer.nvidia.com/compute/cuda/10.0/Prod/local_installers/cuda_10.0.130_411.31_win10'
-            ],
-            [
-                '9.2.148',
-                'https://developer.nvidia.com/compute/cuda/9.2/Prod2/local_installers2/cuda_9.2.148_win10'
-            ],
-            [
-                '8.0.61',
-                'https://developer.nvidia.com/compute/cuda/8.0/Prod2/local_installers/cuda_8.0.61_win10-exe'
-            ]
         ]);
     }
     static get Instance() {
@@ -980,8 +605,8 @@ const parser_1 = __nccwpck_require__(267);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const cuda = core.getInput('cuda');
-            core.debug(`Desired cuda version: ${cuda}`);
+            const rocm = core.getInput('rocm');
+            core.debug(`Desired cuda version: ${rocm}`);
             const subPackagesArgName = 'sub-packages';
             const subPackages = core.getInput(subPackagesArgName);
             core.debug(`Desired subPackages: ${subPackages}`);
@@ -1002,7 +627,7 @@ function run() {
             const methodParsed = (0, method_1.parseMethod)(methodString);
             core.debug(`Parsed method: ${methodParsed}`);
             // Parse version string
-            const version = yield (0, version_1.getVersion)(cuda, methodParsed);
+            const version = yield (0, version_1.getVersion)(rocm, methodParsed);
             // Parse linuxLocalArgs array
             let linuxLocalArgsArray = [];
             try {
@@ -1038,8 +663,8 @@ function run() {
             // Add CUDA environment variables to GitHub environment variables
             const cudaPath = yield (0, update_path_1.updatePath)(version);
             // Set output variables
-            core.setOutput('cuda', cuda);
-            core.setOutput('CUDA_PATH', cudaPath);
+            core.setOutput('rocm', rocm);
+            core.setOutput('ROCM_PATH', cudaPath);
         }
         catch (error) {
             if (error instanceof Error) {
@@ -1169,8 +794,8 @@ function getOs() {
         switch (osPlatform) {
             case 'win32':
                 return OSType.windows;
-            case 'linux':
-                return OSType.linux;
+            // case 'linux':
+            //   return OSType.linux
             default:
                 (0, core_1.debug)(`Unsupported OS: ${osPlatform}`);
                 throw new Error(`Unsupported OS: ${osPlatform}`);
@@ -1298,42 +923,48 @@ const path = __importStar(__nccwpck_require__(1017));
 const platform_1 = __nccwpck_require__(9238);
 function updatePath(version) {
     return __awaiter(this, void 0, void 0, function* () {
-        let cudaPath;
+        let rocmPath;
         switch (yield (0, platform_1.getOs)()) {
             case platform_1.OSType.linux:
-                cudaPath = `/usr/local/cuda-${version.major}.${version.minor}`;
+                rocmPath = `/usr/local/cuda-${version.major}.${version.minor}`;
                 break;
             case platform_1.OSType.windows:
-                cudaPath = `C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v${version.major}.${version.minor}`;
+                rocmPath = `C:\\Program Files\\AMD\\ROCm\\${version.major}.${version.minor}`;
         }
-        core.debug(`Cuda path: ${cudaPath}`);
+        core.debug(`Rocm path: ${rocmPath}`);
         // Export $CUDA_PATH
-        core.exportVariable('CUDA_PATH', cudaPath);
-        core.debug(`Cuda path vx_y: ${cudaPath}`);
-        // Export $CUDA_PATH_VX_Y
-        core.exportVariable(`CUDA_PATH_V${version.major}_${version.minor}`, cudaPath);
-        core.exportVariable('CUDA_PATH_VX_Y', `CUDA_PATH_V${version.major}_${version.minor}`);
+        core.exportVariable('ROCM_PATH', rocmPath);
+        core.debug(`Cuda path vx_y: ${rocmPath}`);
+        // // Export $CUDA_PATH_VX_Y
+        // core.exportVariable(`CUDA_PATH_V${version.major}_${version.minor}`, rocmPath)
+        // core.exportVariable(
+        //   'CUDA_PATH_VX_Y',
+        //   `CUDA_PATH_V${version.major}_${version.minor}`
+        // )
         // Add $CUDA_PATH/bin to $PATH
-        const binPath = path.join(cudaPath, 'bin');
+        const binPath = path.join(rocmPath, 'bin');
         core.debug(`Adding to PATH: ${binPath}`);
         core.addPath(binPath);
         // Update LD_LIBRARY_PATH on linux, see: https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html#environment-setup
-        if ((yield (0, platform_1.getOs)()) === platform_1.OSType.linux) {
-            // Get LD_LIBRARY_PATH
-            const libPath = process.env.LD_LIBRARY_PATH
-                ? process.env.LD_LIBRARY_PATH
-                : '';
-            // Get CUDA lib path
-            const cudaLibPath = path.join(cudaPath, 'lib64');
-            // Check if CUDA lib path is already in LD_LIBRARY_PATH
-            if (!libPath.split(':').includes(cudaLibPath)) {
-                // CUDA lib is not in LD_LIBRARY_PATH, so add it
-                core.debug(`Adding to LD_LIBRARY_PATH: ${cudaLibPath}`);
-                core.exportVariable('LD_LIBRARY_PATH', cudaLibPath + path.delimiter + libPath);
-            }
-        }
+        // if ((await getOs()) === OSType.linux) {
+        //   // Get LD_LIBRARY_PATH
+        //   const libPath = process.env.LD_LIBRARY_PATH
+        //     ? process.env.LD_LIBRARY_PATH
+        //     : ''
+        //   // Get CUDA lib path
+        //   const cudaLibPath = path.join(rocmPath, 'lib64')
+        //   // Check if CUDA lib path is already in LD_LIBRARY_PATH
+        //   if (!libPath.split(':').includes(cudaLibPath)) {
+        //     // CUDA lib is not in LD_LIBRARY_PATH, so add it
+        //     core.debug(`Adding to LD_LIBRARY_PATH: ${cudaLibPath}`)
+        //     core.exportVariable(
+        //       'LD_LIBRARY_PATH',
+        //       cudaLibPath + path.delimiter + libPath
+        //     )
+        //   }
+        // }
         // Return cuda path
-        return cudaPath;
+        return rocmPath;
     });
 }
 exports.updatePath = updatePath;

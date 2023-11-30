@@ -1,7 +1,7 @@
 {
   "name": "cuda-toolkit",
-  "version": "0.2.11",
-  "description": "GitHub Action to install the NVIDIA CUDA Toolkit",
+  "version": "0.0.1",
+  "description": "GitHub Action to install the ROCM Toolkit",
   "main": "lib/main.js",
   "scripts": {
     "build": "tsc --newLine lf",
@@ -14,13 +14,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Jimver/cuda-toolkit.git"
+    "url": "git+https://github.com/Cyberhan123/rocm-toolkit.git"
   },
   "keywords": [],
-  "author": "Jim Verheijde",
-  "bugs": {
-    "url": "https://github.com/Jimver/cuda-toolkit/issues"
-  },
+  "author": "Cyberhan123",
   "homepage": "https://github.com/Jimver/cuda-toolkit#readme",
   "volta": {
     "node": "16.19.1"

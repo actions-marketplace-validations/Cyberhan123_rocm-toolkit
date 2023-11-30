@@ -11,8 +11,8 @@ export async function getOs(): Promise<OSType> {
   switch (osPlatform) {
     case 'win32':
       return OSType.windows
-    case 'linux':
-      return OSType.linux
+    // case 'linux':
+    //   return OSType.linux
     default:
       debug(`Unsupported OS: ${osPlatform}`)
       throw new Error(`Unsupported OS: ${osPlatform}`)

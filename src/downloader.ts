@@ -18,7 +18,7 @@ export async function download(
   useGitHubCache: boolean
 ): Promise<string> {
   // First try to find tool with desired version in tool cache (local to machine)
-  const toolName = 'cuda_installer'
+  const toolName = 'rocm_installer'
   const osType = await getOs()
   const osRelease = await getRelease()
   const toolId = `${toolName}-${osType}-${osRelease}`
