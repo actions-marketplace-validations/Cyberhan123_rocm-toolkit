@@ -43,9 +43,9 @@ export async function install(
             break
         case OSType.windows:
             // Windows handles permissions automatically
-            command = `Start-Process ${executablePath} -ArgumentList '-install', -NoNewWindow -Wait`
+            command = `powershell`
             // Install silently
-            installArgs = []
+            installArgs = ["-Command",`Start-Process ${executablePath} -ArgumentList '-install', -NoNewWindow -Wait`]
             // Add subpackages to command args (if any)
             // installArgs = installArgs.concat(
             //     subPackages.map(subPackage => {

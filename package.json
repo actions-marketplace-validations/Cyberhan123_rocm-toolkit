@@ -1,5 +1,5 @@
 {
-  "name": "cuda-toolkit",
+  "name": "rocm-toolkit",
   "version": "0.0.1",
   "description": "GitHub Action to install the ROCM Toolkit",
   "main": "lib/main.js",
