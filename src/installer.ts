@@ -4,6 +4,8 @@ import * as glob from '@actions/glob'
 import {OSType, getOs} from './platform'
 import {SemVer} from 'semver'
 import {exec} from '@actions/exec'
+import path from "path";
+import os from "os";
 
 export async function install(
     executablePath: string,
@@ -25,10 +27,10 @@ export async function install(
     const execOptions = {
         listeners: {
             stdout: (data: Buffer) => {
-                core.debug(data.toString())
+                core.info(data.toString())
             },
             stderr: (data: Buffer) => {
-                core.debug(`Error: ${data.toString()}`)
+                core.info(`Error: ${data.toString()}`)
             }
         }
     }
@@ -45,7 +47,7 @@ export async function install(
             // Windows handles permissions automatically
             command = `powershell`
             // Install silently
-            installArgs = ["-Command",`Start-Process ${executablePath} -ArgumentList '-install','-log',"${executablePath}/installer_log.txt" -NoNewWindow -Wait`]
+            installArgs = ["-Command", `Start-Process ${executablePath} -ArgumentList '-install','-log',"${os.tmpdir()}/installer_log.txt" -NoNewWindow -Wait`]
             // Add subpackages to command args (if any)
             // installArgs = installArgs.concat(
             //     subPackages.map(subPackage => {
@@ -72,11 +74,11 @@ export async function install(
         if ((await getOs()) === OSType.windows) {
             const artifactClient = artifact.create()
             const artifactName = 'install-log'
-            const patterns = [`${executablePath}/installer_log.txt`]
+            const patterns = [path.join(os.tmpdir(), "installer_log.txt")]
             const globber = await glob.create(patterns.join('\n'))
             const files = await globber.glob()
             if (files.length > 0) {
-                const rootDirectory = executablePath
+                const rootDirectory = os.tmpdir()
                 const artifactOptions = {
                     continueOnError: true
                 }
