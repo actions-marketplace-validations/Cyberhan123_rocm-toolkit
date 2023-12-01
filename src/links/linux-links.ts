@@ -11,9 +11,7 @@ export class LinuxLinks extends AbstractLinks {
   private constructor() {
     super()
     // Map of cuda SemVer version to download URL
-    this.cudaVersionToURL = new Map([
-
-    ])
+    this.cudaVersionToURL = new Map([])
   }
 
   static get Instance(): LinuxLinks {
