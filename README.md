@@ -12,7 +12,7 @@ Default: `'5.5.0'`.
 
 ```yaml
 steps:
-- uses: Cyberhan123/rocm-toolkit@v0.0.1
+- uses: Cyberhan123/rocm-toolkit@v0.1.0
   id: rocm-toolkit
   with:
     rocm: '5.5.0'

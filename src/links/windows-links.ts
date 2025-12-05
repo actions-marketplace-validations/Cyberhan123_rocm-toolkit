@@ -27,7 +27,7 @@ export class WindowsLinks extends AbstractLinks {
     [
       '5.5.0',
       'https://download.amd.com/developer/eula/rocm-hub/AMD-Software-PRO-Edition-23.Q3-WinSvr2022-For-HIP.exe'
-    ],
+    ]
   ])
 
   // Private constructor to prevent instantiation
@@ -38,8 +38,7 @@ export class WindowsLinks extends AbstractLinks {
       [
         '5.5.0',
         'https://download.amd.com/developer/eula/rocm-hub/AMD-Software-PRO-Edition-23.Q3-WinSvr2022-For-HIP.exe'
-      ],
-
+      ]
     ])
   }
 
